@@ -1,7 +1,7 @@
 NAME = philo
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror
-SRCS = philo.c utils.c
+SRCS = philo.c input_validation_utils.c
 OBJS = $(SRCS:.c=.o)
 
 all: $(NAME)

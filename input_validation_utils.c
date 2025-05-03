@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   input_validation_utils.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hakotu <hakotu@student.42istanbul.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 19:07:25 by hakotu            #+#    #+#             */
-/*   Updated: 2025/05/03 19:36:48 by hakotu           ###   ########.fr       */
+/*   Updated: 2025/05/03 23:09:45 by hakotu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,21 +68,32 @@ int	is_valid_number(const char *str)
 
 int	define_values(int argc, char *argv[], t_philosopher *philosopher)
 {
-	if (!is_valid_number(argv[1]) || !is_valid_number(argv[2])
-		|| !is_valid_number(argv[3]) || !is_valid_number(argv[4])
-		|| (argc == 6 && !is_valid_number(argv[5])))
+	if (argc < 5 || argc > 6)
 	{
-		return (1); // Hatalı bir argüman varsa işlemi durdur
+		printf("Error: Invalid number of arguments.\n");
+		return (1); // Hatalı argüman sayısı varsa işlemi durdur
 	}
-
-	philosopher->id = ft_atoi(argv[1]);
-	philosopher->time_to_die = ft_atoi(argv[2]);
-	philosopher->time_to_eat = ft_atoi(argv[3]);
-	philosopher->time_to_sleep = ft_atoi(argv[4]);
-	if (argc == 6)
-		philosopher->number_of_times_each_philosopher_must_eat = ft_atoi(argv[5]);
-	else
-		philosopher->number_of_times_each_philosopher_must_eat = -1; // Opsiyonel argüman yoksa -1 olarak ayarla
-
-	return (0); // Başarılı
+    if (!is_valid_number(argv[1]) || !is_valid_number(argv[2])
+        || !is_valid_number(argv[3]) || !is_valid_number(argv[4])
+        || (argc == 6 && !is_valid_number(argv[5])))
+    {
+        return (1); // Hatalı bir argüman varsa işlemi durdur
+    }
+    
+    philosopher->id = ft_atoi(argv[1]);
+    philosopher->time_to_die = ft_atoi(argv[2]);
+    philosopher->time_to_eat = ft_atoi(argv[3]);
+    philosopher->time_to_sleep = ft_atoi(argv[4]);
+    if (argc == 6)
+        philosopher->number_of_times_each_philosopher_must_eat = ft_atoi(argv[5]);
+    else
+        philosopher->number_of_times_each_philosopher_must_eat = -1; // Opsiyonel argüman yoksa -1 olarak ayarla
+    
+    // Tüm değerlerin pozitif olup olmadığını kontrol et
+    if (philosopher->id <= 0 || philosopher->time_to_die <= 0 || philosopher->time_to_eat <= 0 || philosopher->time_to_sleep <= 0)
+    {
+        printf("Error: Arguments must be positive integers.\n");
+        return (1); // Negatif veya sıfır bir argüman varsa işlemi durdur
+    }
+    return (0); // Başarılı
 }
