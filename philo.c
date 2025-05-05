@@ -6,7 +6,7 @@
 /*   By: hakotu <hakotu@student.42istanbul.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 18:52:38 by hakotu            #+#    #+#             */
-/*   Updated: 2025/05/03 23:02:41 by hakotu           ###   ########.fr       */
+/*   Updated: 2025/05/05 18:16:31 by hakotu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,14 @@
 
 int	main(int argc, char *argv[])
 {
-	t_philosopher	philosopher;
+	t_philo	philosopher;
+	pthread_mutex_t	mutex;
 
 	if (argv[1] == NULL)
 	{
 		printf("Error: No arguments provided.\n");
 		return (1);
 	}
-	
 	if (define_values(argc, argv, &philosopher) != 0)
 		return (1);
 
@@ -31,4 +31,5 @@ int	main(int argc, char *argv[])
 		return (1);
 	}
 	return (0);
+	
 }
