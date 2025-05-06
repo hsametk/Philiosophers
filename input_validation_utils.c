@@ -6,7 +6,7 @@
 /*   By: hakotu <hakotu@student.42istanbul.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 19:07:25 by hakotu            #+#    #+#             */
-/*   Updated: 2025/05/05 18:20:16 by hakotu           ###   ########.fr       */
+/*   Updated: 2025/05/06 15:23:51 by hakotu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,10 +80,10 @@ int	define_values(int argc, char *argv[], t_philo *philo)
         return (1); // Hatalı bir argüman varsa işlemi durdur
     }
     
-    philo->num_of_philos = ft_atoi(argv[1]);
-    philo->time_to_die = ft_atoi(argv[2]);
-    philo->time_to_eat = ft_atoi(argv[3]);
-    philo->time_to_sleep = ft_atoi(argv[4]);
+    // philo->num_of_philos = ft_atoi(argv[1]);
+    // philo->time_to_die = ft_atoi(argv[2]);
+    // philo->time_to_eat = ft_atoi(argv[3]);
+    // philo->time_to_sleep = ft_atoi(argv[4]);
     if (argc == 6)
         philo->num_times_to_eat = ft_atoi(argv[5]);
     else
@@ -97,3 +97,5 @@ int	define_values(int argc, char *argv[], t_philo *philo)
     }
     return (0); // Başarılı
 }
+
+// philoların bilgilerini doldur 

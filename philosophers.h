@@ -6,7 +6,7 @@
 /*   By: hakotu <hakotu@student.42istanbul.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 18:51:35 by hakotu            #+#    #+#             */
-/*   Updated: 2025/05/05 18:16:03 by hakotu           ###   ########.fr       */
+/*   Updated: 2025/05/06 19:04:37 by hakotu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 # include	<stdbool.h>
 # include	<pthread.h>
 # include	<stdio.h>
+
+# define PHILO_MAX 200
 
 typedef struct s_philo
 {
@@ -41,7 +43,6 @@ typedef struct s_philo
 	pthread_mutex_t	*dead_lock;
 	pthread_mutex_t	*meal_lock;
 }					t_philo;
-
 typedef struct s_program
 {
 	int				dead_flag;
@@ -50,9 +51,15 @@ typedef struct s_program
 	pthread_mutex_t	write_lock;
 	t_philo			*philos;
 }					t_program;
-int	ft_atoi(const char *str);
-int	ft_isdigit(int c);
-int	is_valid_number(const char *str);
-int	define_values(int argc, char *argv[], t_philo *philo);
 
+
+int		ft_atoi(const char *str);
+int		ft_isdigit(int c);
+int		is_valid_number(const char *str);
+int		define_values(int argc, char *argv[], t_philo *philo);
+void	create_threads(t_philo *philo);
+void	*philosopher_routine(void *arg);
+void	init_mutexes(t_program *program, t_philo *philos);
+void    init_philos(t_program *program, t_philo *philos, pthread_mutex_t *forks);
+size_t	get_time(void);
 #endif // PHILOSOPHERS_H
