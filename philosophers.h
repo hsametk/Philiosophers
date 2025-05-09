@@ -1,4 +1,4 @@
-/* ************************************************************************** */
+	/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   philosophers.h                                     :+:      :+:    :+:   */
@@ -55,8 +55,9 @@ typedef struct s_program
 
 int		ft_atoi(const char *str);
 int		ft_isdigit(int c);
+void	check_input(int argc, char *argv[], t_philo *philosopher);
+int		check_arg(int argc, char *argv[], t_philo *philo);
 int		is_valid_number(const char *str);
-int		define_values(int argc, char *argv[], t_philo *philo);
 void	create_threads(t_philo *philo);
 void	*philosopher_routine(void *arg);
 void	init_mutexes(t_program *program, t_philo *philos);

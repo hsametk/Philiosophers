@@ -6,7 +6,7 @@
 /*   By: hakotu <hakotu@student.42istanbul.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 19:07:25 by hakotu            #+#    #+#             */
-/*   Updated: 2025/05/06 15:23:51 by hakotu           ###   ########.fr       */
+/*   Updated: 2025/05/09 17:54:56 by hakotu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,9 @@ int	is_valid_number(const char *str)
 	return (1);
 }
 
-int	define_values(int argc, char *argv[], t_philo *philo)
+int	check_arg(int argc, char *argv[], t_philo *philo)
 {
+	int	i;
 	if (argc < 5 || argc > 6)
 	{
 		printf("Error: Invalid number of arguments.\n");
@@ -79,23 +80,17 @@ int	define_values(int argc, char *argv[], t_philo *philo)
     {
         return (1); // Hatalı bir argüman varsa işlemi durdur
     }
-    
-    // philo->num_of_philos = ft_atoi(argv[1]);
-    // philo->time_to_die = ft_atoi(argv[2]);
-    // philo->time_to_eat = ft_atoi(argv[3]);
-    // philo->time_to_sleep = ft_atoi(argv[4]);
-    if (argc == 6)
-        philo->num_times_to_eat = ft_atoi(argv[5]);
-    else
-		philo->num_times_to_eat = -1; // Opsiyonel argüman yoksa -1 olarak ayarla
-    
-    // Tüm değerlerin pozitif olup olmadığını kontrol et
-    if (philo->num_of_philos <= 0 || philo->time_to_die <= 0 || philo->time_to_eat <= 0 || philo->time_to_sleep <= 0)
-    {
-        printf("Error: Arguments must be positive integers.\n");
-        return (1); // Negatif veya sıfır bir argüman varsa işlemi durdur
-    }
-    return (0); // Başarılı
+	i = 1;
+	while (i < argc)
+	{
+		if (ft_atoi(argv[i]) <= 0)
+		{
+			printf("Error: Arguments must be positive integers.\n");
+			return (1); // Negatif veya sıfır bir argüman varsa işlemi durdur
+		}
+		i++;
+	}
+	return (0); // Başarılı
 }
 
 // philoların bilgilerini doldur 
