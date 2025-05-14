@@ -6,7 +6,7 @@
 /*   By: hakotu <hakotu@student.42istanbul.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 12:41:17 by hakotu            #+#    #+#             */
-/*   Updated: 2025/05/06 19:11:14 by hakotu           ###   ########.fr       */
+/*   Updated: 2025/05/14 16:43:54 by hakotu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,44 @@
 
 void *philo_routine(void *arg)
 {
-    t_philo	*philo;
+    t_philo *philo;
+
     philo = (t_philo *)arg;
-    printf("%zu Philosopher %d is thinking.\n", get_time() - philo->start_time, philo->id);
-    pthread_mutex_lock(philo->write_lock);
+    while (1)
+    {
+        // Düşünme
+        pthread_mutex_lock(philo->write_lock);
+        printf("%zu %d is thinking.\n", get_time() - philo->start_time, philo->id);
+        pthread_mutex_unlock(philo->write_lock);
+
+        // Çatal alma
+        if (philo->id % 2 == 0)
+        {
+            pthread_mutex_lock(philo->r_fork);
+            pthread_mutex_lock(philo->l_fork);
+        }
+        else
+        {
+            pthread_mutex_lock(philo->l_fork);
+            pthread_mutex_lock(philo->r_fork);
+        }
+
+        // Yemek yeme
+        pthread_mutex_lock(philo->write_lock);
+        printf("%zu %d is eating.\n", get_time() - philo->start_time, philo->id);
+        pthread_mutex_unlock(philo->write_lock);
+        usleep(philo->time_to_eat * 1000);
+
+        // Çatal bırakma
+        pthread_mutex_unlock(philo->l_fork);
+        pthread_mutex_unlock(philo->r_fork);
+
+        // Uyuma
+        pthread_mutex_lock(philo->write_lock);
+        printf("%zu %d is sleeping.\n", get_time() - philo->start_time, philo->id);
+        pthread_mutex_unlock(philo->write_lock);
+        usleep(philo->time_to_sleep * 1000);
+    }
     return (NULL);
 }
 void create_threads(t_philo *philo)
@@ -26,19 +60,18 @@ void create_threads(t_philo *philo)
     int			i;
     
     threads = malloc(sizeof(pthread_t) * philo->num_of_philos);
-    //thread_args args = {&mails, &mutex};
     if (threads == NULL)
     {
         printf("Error: Failed to allocate memory for threads.\n");
-        return ;
+        return;
     }
     i = 0;
     while (i < philo->num_of_philos)
     {
-        if (pthread_create(threads[i], NULL, philo_routine, &philo[i]) != 0) //
+        if (pthread_create(&threads[i], NULL, philo_routine, &philo[i]) != 0)
         {
             printf("Error: Failed to create thread for philosopher %d.\n", i);
-            return ;
+            return;
         }
         i++;
     }
@@ -48,6 +81,7 @@ void create_threads(t_philo *philo)
         pthread_join(threads[i], NULL);
         i++;
     }
+    free(threads);
 }
 void	init_mutexes(t_program *program, t_philo *philos)
 {
@@ -60,30 +94,29 @@ void	init_mutexes(t_program *program, t_philo *philos)
 //TODO: pthread_join in NULL u değişip dönecek olan değişken oraya atanacak
 void    init_philos(t_program *program, t_philo *philos, pthread_mutex_t *forks)
 {
-	int	i;
+    int	i;
 
-	i = 0;
-	while (i < philos->num_of_philos)
-	{
-		program->philos[i].id = i + 1;
-		program->philos[i].eating = 0;
-		program->philos[i].meals_eaten = 0;
-		program->philos[i].last_meal = 0;
-		program->philos[i].time_to_die = philos->time_to_die;
-		program->philos[i].time_to_eat = philos->time_to_eat;
-		program->philos[i].time_to_sleep = philos->time_to_sleep;
-		program->philos[i].start_time = get_time();
-		program->philos[i].num_of_philos = philos->num_of_philos;
-		program->philos[i].num_times_to_eat = philos->num_times_to_eat;
-		program->philos[i].dead = &program->dead_flag;
+    i = 0;
+    while (i < philos->num_of_philos)
+    {
+        program->philos[i].id = i + 1;
+        program->philos[i].eating = 0;
+        program->philos[i].meals_eaten = 0;
+        program->philos[i].last_meal = 0;
+        program->philos[i].time_to_die = philos->time_to_die;
+        program->philos[i].time_to_eat = philos->time_to_eat;
+        program->philos[i].time_to_sleep = philos->time_to_sleep;
+        program->philos[i].start_time = get_time();
+        program->philos[i].num_of_philos = philos->num_of_philos;
+        program->philos[i].num_times_to_eat = philos->num_times_to_eat;
+        program->philos[i].dead = &program->dead_flag;
         program->philos[i].write_lock = &program->write_lock;
         program->philos[i].dead_lock = &program->dead_lock;
         program->philos[i].meal_lock = &program->meal_lock;
-        philos[i].l_fork = &forks[i];
-		if (i == 0)
-			philos[i].r_fork = &forks[philos[i].num_of_philos - 1];
-		else
-			philos[i].r_fork = &forks[i - 1];
-		i++;
-	}
+
+        // Çatalların atanması
+        program->philos[i].l_fork = &forks[i];
+        program->philos[i].r_fork = &forks[(i + 1) % philos->num_of_philos];
+        i++;
+    }
 }
