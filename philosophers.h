@@ -6,7 +6,7 @@
 /*   By: hakotu <hakotu@student.42istanbul.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 18:51:35 by hakotu            #+#    #+#             */
-/*   Updated: 2025/05/14 14:57:44 by hakotu           ###   ########.fr       */
+/*   Updated: 2025/05/17 19:29:57 by hakotu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,14 +54,13 @@ typedef struct s_program
 }					t_program;
 
 
-int		ft_atoi(const char *str);
 int		ft_isdigit(int c);
-void	check_input(int argc, char *argv[], t_philo *philosopher);
-int		check_arg(int argc, char *argv[], t_philo *philo);
+long	ft_atol(const char *str);
+int		check_input(int argc, char *argv[]);
+int		check_arg(int argc, char *argv[]);
 int		is_valid_number(const char *str);
 void	create_threads(t_philo *philo);
-int check_arg(int argc, char *argv[], t_philo *philo);
-void init_philos(t_program *program, t_philo *philos, pthread_mutex_t *forks);
-void init_mutexes(t_program *program, t_philo *philos);
+void	init_philos(t_program *program, t_philo *philos, pthread_mutex_t *forks);
+void	init_mutexes(t_program *program, t_philo *philos);
 size_t	get_time(void);
 #endif // PHILOSOPHERS_H

@@ -6,7 +6,7 @@
 /*   By: hakotu <hakotu@student.42istanbul.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 12:41:17 by hakotu            #+#    #+#             */
-/*   Updated: 2025/05/14 16:43:54 by hakotu           ###   ########.fr       */
+/*   Updated: 2025/05/17 17:12:25 by hakotu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void *philo_routine(void *arg)
     {
         // Düşünme
         pthread_mutex_lock(philo->write_lock);
-        printf("%zu %d is thinking.\n", get_time() - philo->start_time, philo->id);
+        printf("%zu %d is thinking\n", get_time() - philo->start_time, philo->id);
         pthread_mutex_unlock(philo->write_lock);
 
         // Çatal alma
@@ -38,7 +38,7 @@ void *philo_routine(void *arg)
 
         // Yemek yeme
         pthread_mutex_lock(philo->write_lock);
-        printf("%zu %d is eating.\n", get_time() - philo->start_time, philo->id);
+        printf("%zu %d is eating\n", get_time() - philo->start_time, philo->id);
         pthread_mutex_unlock(philo->write_lock);
         usleep(philo->time_to_eat * 1000);
 
@@ -48,7 +48,7 @@ void *philo_routine(void *arg)
 
         // Uyuma
         pthread_mutex_lock(philo->write_lock);
-        printf("%zu %d is sleeping.\n", get_time() - philo->start_time, philo->id);
+        printf("%zu %d is sleeping\n", get_time() - philo->start_time, philo->id);
         pthread_mutex_unlock(philo->write_lock);
         usleep(philo->time_to_sleep * 1000);
     }
