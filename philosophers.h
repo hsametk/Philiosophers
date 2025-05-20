@@ -6,7 +6,7 @@
 /*   By: hakotu <hakotu@student.42istanbul.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 18:51:35 by hakotu            #+#    #+#             */
-/*   Updated: 2025/05/17 19:29:57 by hakotu           ###   ########.fr       */
+/*   Updated: 2025/05/20 20:23:34 by hakotu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,4 +63,8 @@ void	create_threads(t_philo *philo);
 void	init_philos(t_program *program, t_philo *philos, pthread_mutex_t *forks);
 void	init_mutexes(t_program *program, t_philo *philos);
 size_t	get_time(void);
+void	*philo_routine(void *arg);
+void	eating(t_philo *philo);
+void	sleeping(t_philo *philo);
+
 #endif // PHILOSOPHERS_H

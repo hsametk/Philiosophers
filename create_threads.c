@@ -6,54 +6,12 @@
 /*   By: hakotu <hakotu@student.42istanbul.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 12:41:17 by hakotu            #+#    #+#             */
-/*   Updated: 2025/05/17 17:12:25 by hakotu           ###   ########.fr       */
+/*   Updated: 2025/05/20 20:28:08 by hakotu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void *philo_routine(void *arg)
-{
-    t_philo *philo;
-
-    philo = (t_philo *)arg;
-    while (1)
-    {
-        // Düşünme
-        pthread_mutex_lock(philo->write_lock);
-        printf("%zu %d is thinking\n", get_time() - philo->start_time, philo->id);
-        pthread_mutex_unlock(philo->write_lock);
-
-        // Çatal alma
-        if (philo->id % 2 == 0)
-        {
-            pthread_mutex_lock(philo->r_fork);
-            pthread_mutex_lock(philo->l_fork);
-        }
-        else
-        {
-            pthread_mutex_lock(philo->l_fork);
-            pthread_mutex_lock(philo->r_fork);
-        }
-
-        // Yemek yeme
-        pthread_mutex_lock(philo->write_lock);
-        printf("%zu %d is eating\n", get_time() - philo->start_time, philo->id);
-        pthread_mutex_unlock(philo->write_lock);
-        usleep(philo->time_to_eat * 1000);
-
-        // Çatal bırakma
-        pthread_mutex_unlock(philo->l_fork);
-        pthread_mutex_unlock(philo->r_fork);
-
-        // Uyuma
-        pthread_mutex_lock(philo->write_lock);
-        printf("%zu %d is sleeping\n", get_time() - philo->start_time, philo->id);
-        pthread_mutex_unlock(philo->write_lock);
-        usleep(philo->time_to_sleep * 1000);
-    }
-    return (NULL);
-}
 void create_threads(t_philo *philo)
 {
     pthread_t	*threads;
@@ -106,7 +64,8 @@ void    init_philos(t_program *program, t_philo *philos, pthread_mutex_t *forks)
         program->philos[i].time_to_die = philos->time_to_die;
         program->philos[i].time_to_eat = philos->time_to_eat;
         program->philos[i].time_to_sleep = philos->time_to_sleep;
-        program->philos[i].start_time = get_time();
+        size_t start_time = get_time();
+        program->philos[i].start_time = start_time;
         program->philos[i].num_of_philos = philos->num_of_philos;
         program->philos[i].num_times_to_eat = philos->num_times_to_eat;
         program->philos[i].dead = &program->dead_flag;
