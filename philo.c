@@ -6,7 +6,7 @@
 /*   By: hakotu <hakotu@student.42istanbul.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 18:52:38 by hakotu            #+#    #+#             */
-/*   Updated: 2025/05/20 20:37:05 by hakotu           ###   ########.fr       */
+/*   Updated: 2025/05/21 18:30:00 by hakotu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,36 @@
 
 int	main(int argc, char *argv[])
 {
-    t_program	program;
-    t_philo		philosopher[PHILO_MAX];
-    pthread_mutex_t	forks[PHILO_MAX];
+    t_program program;
 
     if (check_input(argc, argv) != 0)
         return (1);
+
     memset(&program, 0, sizeof(t_program));
-    program.philos = malloc(sizeof(t_philo) * ft_atol(argv[1]));
-    if (program.philos == NULL)
+    program.num_of_philos = ft_atol(argv[1]);
+    program.start_time = get_time();
+    program.time_to_die = ft_atol(argv[2]);
+    program.time_to_eat = ft_atol(argv[3]);
+    program.time_to_sleep = ft_atol(argv[4]);
+    if (argc == 6)
+        program.num_times_to_eat = ft_atol(argv[5]);
+    else
+        program.num_times_to_eat = -1;
+
+    program.philos = malloc(sizeof(t_philo) * program.num_of_philos);
+    program.forks = malloc(sizeof(pthread_mutex_t) * program.num_of_philos);
+    if (!program.philos || !program.forks)
     {
-        printf("Error: Failed to allocate memory for philosophers.\n");
+        printf("Error: Memory allocation failed.\n");
         return (1);
     }
-    if (!program.philos)
-        return (1);
-    init_mutexes(&program, philosopher);
-    init_philos(&program, philosopher, forks);
-    create_threads(philosopher);
+
+    init_mutexes(&program);
+    init_philos(&program);
+    create_threads(&program);
+
+    free(program.philos);
+    free(program.forks);
     return (0);
 }
 

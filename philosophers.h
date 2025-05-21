@@ -6,7 +6,7 @@
 /*   By: hakotu <hakotu@student.42istanbul.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 18:51:35 by hakotu            #+#    #+#             */
-/*   Updated: 2025/05/20 20:23:34 by hakotu           ###   ########.fr       */
+/*   Updated: 2025/05/21 18:24:10 by hakotu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,31 +26,27 @@
 
 typedef struct s_philo
 {
-	pthread_t		thread;
-	int				id;
-	int				eating;
-	int				meals_eaten;
-	size_t			last_meal;
-	size_t			time_to_die;
-	size_t			time_to_eat;
-	size_t			time_to_sleep;
-	size_t			start_time;
-	int				num_of_philos;
-	int				num_times_to_eat;
-	int				*dead;
-	pthread_mutex_t	*r_fork;
-	pthread_mutex_t	*l_fork;
-	pthread_mutex_t	*write_lock;
-	pthread_mutex_t	*dead_lock;
-	pthread_mutex_t	*meal_lock;
+	pthread_t		thread;         // Filozofun thread'i
+	int				id;             // Filozofun ID'si
+	int				meals_eaten;    // Yediği yemek sayısı
+	size_t			last_meal;      // Son yemek yediği zaman (ms)
+	struct s_program	*program;    // Program yapısına erişim
+	pthread_mutex_t	*r_fork;        // Sağ çatal
+	pthread_mutex_t	*l_fork;        // Sol çatal
 }					t_philo;
 typedef struct s_program
 {
-	int				dead_flag;
-	pthread_mutex_t	dead_lock;
-	pthread_mutex_t	meal_lock;
-	pthread_mutex_t	write_lock;
-	t_philo			*philos;
+    int				num_of_philos;  // Filozof sayısı
+    int				dead_flag;      // Ölüm bayrağı (1: biri öldü, 0: herkes yaşıyor)
+    size_t			start_time;     // Programın başlangıç zamanı (ms)
+    size_t			time_to_die;    // Ölüm süresi (ms)
+    size_t			time_to_eat;    // Yemek yeme süresi (ms)
+    size_t			time_to_sleep;  // Uyuma süresi (ms)
+    int				num_times_to_eat; // Yemesi gereken toplam yemek sayısı
+    pthread_mutex_t	write_lock;     // Yazma işlemleri için mutex
+    pthread_mutex_t	dead_lock;      // Ölüm bayrağı için mutex
+    pthread_mutex_t	*forks;         // Çatalların mutex dizisi
+    t_philo			*philos;        // Filozofların dizisi
 }					t_program;
 
 
@@ -59,9 +55,9 @@ long	ft_atol(const char *str);
 int		check_input(int argc, char *argv[]);
 int		check_arg(int argc, char *argv[]);
 int		is_valid_number(const char *str);
-void	create_threads(t_philo *philo);
-void	init_philos(t_program *program, t_philo *philos, pthread_mutex_t *forks);
-void	init_mutexes(t_program *program, t_philo *philos);
+void	create_threads(t_program *program);
+void	init_philos(t_program *program);
+void	init_mutexes(t_program *program);
 size_t	get_time(void);
 void	*philo_routine(void *arg);
 void	eating(t_philo *philo);
