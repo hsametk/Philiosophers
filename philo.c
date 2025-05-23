@@ -6,7 +6,7 @@
 /*   By: hakotu <hakotu@student.42istanbul.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 18:52:38 by hakotu            #+#    #+#             */
-/*   Updated: 2025/05/21 18:30:00 by hakotu           ###   ########.fr       */
+/*   Updated: 2025/05/23 17:59:07 by hakotu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,14 @@ int	main(int argc, char *argv[])
     init_mutexes(&program);
     init_philos(&program);
     create_threads(&program);
-
+    // if (program.num_of_philos == 1)
+    // {
+    //     handle_single_philo(&program);
+    //     free(program.philos);
+    //     free(program.forks);
+    //     return (0);
+    // }
+    destroy_mutexes(&program);
     free(program.philos);
     free(program.forks);
     return (0);
@@ -159,3 +166,21 @@ int check_input(int argc, char *argv[])
 
 Bu roadmap'i takip ederek projenizi adım adım tamamlayabilirsiniz.
 */
+
+void destroy_mutexes(t_program *program)
+{
+    int i;
+
+    for (i = 0; i < program->num_of_philos; i++)
+        pthread_mutex_destroy(&program->forks[i]);
+    pthread_mutex_destroy(&program->write_lock);
+    pthread_mutex_destroy(&program->dead_lock);
+}
+
+// void handle_single_philo(t_program *program)
+// {
+//     printf("%zu 1 is thinking\n", get_time() - program->start_time);
+//     printf("%zu 1 has taken a fork\n", get_time() - program->start_time);
+//     usleep(program->time_to_die * 1000);
+//     printf("%zu 1 died\n", get_time() - program->start_time);
+// }

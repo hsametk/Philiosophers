@@ -6,7 +6,7 @@
 /*   By: hakotu <hakotu@student.42istanbul.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 18:51:35 by hakotu            #+#    #+#             */
-/*   Updated: 2025/05/21 18:24:10 by hakotu           ###   ########.fr       */
+/*   Updated: 2025/05/23 16:17:09 by hakotu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,12 +55,15 @@ long	ft_atol(const char *str);
 int		check_input(int argc, char *argv[]);
 int		check_arg(int argc, char *argv[]);
 int		is_valid_number(const char *str);
-void	create_threads(t_program *program);
-void	init_philos(t_program *program);
-void	init_mutexes(t_program *program);
+void    handle_single_philo(t_program *program);
+void    destroy_mutexes(t_program *program);
+void    init_mutexes(t_program *program);
+void    init_philos(t_program *program);
+void    create_threads(t_program *program);
 size_t	get_time(void);
 void	*philo_routine(void *arg);
 void	eating(t_philo *philo);
 void	sleeping(t_philo *philo);
+int     check_all_ate(t_program *program);
 
 #endif // PHILOSOPHERS_H
