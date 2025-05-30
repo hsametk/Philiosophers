@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   create_threads.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hakotu <hakotu@student.42istanbul.com>     +#+  +:+       +#+        */
+/*   By: hakotu <hakotu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 12:41:17 by hakotu            #+#    #+#             */
-/*   Updated: 2025/05/23 17:27:22 by hakotu           ###   ########.fr       */
+/*   Updated: 2025/05/30 17:22:05 by hakotu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,17 @@ void	*monitor_routine(void *arg)
 		while (i < program->num_of_philos)
 		{
 			pthread_mutex_lock(&program->dead_lock);
+			if (program->dead_flag)
+			{
+				pthread_mutex_unlock(&program->dead_lock);
+				return (NULL);
+			}
 			if (get_time() - program->philos[i].last_meal > program->time_to_die)
 			{
-				program->dead_flag = 1;
+				pthread_mutex_lock(&program->write_lock);
 				printf("%zu %d died\n", get_time() - program->start_time, program->philos[i].id);
+				pthread_mutex_unlock(&program->write_lock);
+				program->dead_flag = 1;
 				pthread_mutex_unlock(&program->dead_lock);
 				return (NULL);
 			}
@@ -43,7 +50,7 @@ void	*monitor_routine(void *arg)
 			pthread_mutex_unlock(&program->dead_lock);
 			i++;
 		}
-		usleep(1000);
+		usleep(100);
 	}
 	return (NULL);
 }
@@ -95,27 +102,19 @@ void	init_mutexes(t_program *program)
 
 void	init_philos(t_program *program)
 {
-	int	i;
+    int	i;
 
-	i = 0;
-	while (i < program->num_of_philos)
-	{
-		program->philos[i].id = i + 1;
-		program->philos[i].meals_eaten = 0;
-		program->philos[i].last_meal = program->start_time;
-		program->philos[i].program = program;
-		if (program->philos[i].id % 2 == 0)
-		{
-			program->philos[i].r_fork = &program->forks[i];
-			program->philos[i].l_fork = &program->forks[(i + 1) % program->num_of_philos];
-		}
-		else
-		{
-			program->philos[i].l_fork = &program->forks[i];
-			program->philos[i].r_fork = &program->forks[(i + 1) % program->num_of_philos];
-		}
-		i++;
-	}
+    i = 0;
+    while (i < program->num_of_philos)
+    {
+        program->philos[i].id = i + 1;
+        program->philos[i].meals_eaten = 0;
+        program->philos[i].last_meal = program->start_time;
+        program->philos[i].program = program;
+        program->philos[i].l_fork = &program->forks[i];
+        program->philos[i].r_fork = &program->forks[(i + 1) % program->num_of_philos];
+        i++;
+    }
 }
 
 int check_all_ate(t_program *program)
