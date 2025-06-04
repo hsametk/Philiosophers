@@ -6,7 +6,7 @@
 /*   By: hakotu <hakotu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 19:10:54 by hakotu            #+#    #+#             */
-/*   Updated: 2025/05/30 17:21:46 by hakotu           ###   ########.fr       */
+/*   Updated: 2025/06/04 13:36:12 by hakotu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,26 +107,28 @@ void thinking(t_philo *philo)
 
 void eating(t_philo *philo)
 {
-    // İlk ölüm kontrolü
-    pthread_mutex_lock(&philo->program->dead_lock);
-    if (philo->program->dead_flag)
-    {
-        pthread_mutex_unlock(&philo->program->dead_lock);
-        return;
-    }
-    pthread_mutex_unlock(&philo->program->dead_lock);
-
-    // Tek filozof durumu
+    // Tek filozof kontrolü
     if (philo->program->num_of_philos == 1)
     {
         pthread_mutex_lock(philo->l_fork);
         pthread_mutex_lock(&philo->program->write_lock);
-        printf("%zu %d has taken a fork\n", get_time() - philo->program->start_time, philo->id);
+        printf("%zu %d has taken a fork\n", 
+            get_time() - philo->program->start_time, philo->id);
         pthread_mutex_unlock(&philo->program->write_lock);
-        while (!philo->program->dead_flag)
-            usleep(100);
-        pthread_mutex_unlock(philo->l_fork);
-        return;
+        
+        // Ölene kadar bekle
+        while (1)
+        {
+            pthread_mutex_lock(&philo->program->dead_lock);
+            if (philo->program->dead_flag)
+            {
+                pthread_mutex_unlock(&philo->program->dead_lock);
+                pthread_mutex_unlock(philo->l_fork);
+                return;
+            }
+            pthread_mutex_unlock(&philo->program->dead_lock);
+            usleep(500);
+        }
     }
 
     // Her işlem öncesi ölüm kontrolü
@@ -217,15 +219,17 @@ void *philo_routine(void *arg)
     t_philo *philo;
 
     philo = (t_philo *)arg;
+    pthread_mutex_lock(&philo->program->dead_lock);
+    philo->last_meal = get_time(); // Başlangıç yemek zamanını ayarla
+    pthread_mutex_unlock(&philo->program->dead_lock);
+
     if (philo->id % 2 == 0)
         usleep(1000);
 
     while (1)
     {
         pthread_mutex_lock(&philo->program->dead_lock);
-        if (philo->program->dead_flag || 
-            (philo->program->num_times_to_eat != -1 && 
-             philo->meals_eaten >= philo->program->num_times_to_eat))
+        if (philo->program->dead_flag)
         {
             pthread_mutex_unlock(&philo->program->dead_lock);
             return (NULL);
