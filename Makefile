@@ -1,11 +1,13 @@
 NAME = philo
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -pthread
+CFLAGS = -Wall -Wextra -Werror -pthread -fsanitize=thread -g
 SRCS = philo.c \
        input_validation_utils.c \
        create_threads.c \
        routine.c \
-       utils.c
+       utils.c \
+       philo_actions.c \
+       create_threads_utils.c
 
 OBJS = $(SRCS:.c=.o)
 

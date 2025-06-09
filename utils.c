@@ -1,33 +1,70 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hakotu <hakotu@student.42istanbul.com>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/03 18:51:35 by hakotu            #+#    #+#             */
+/*   Updated: 2025/06/06 14:11:11 by hakotu           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philosophers.h"
+
+void	precise_sleep(size_t duration)
+{
+	size_t	start;
+
+	start = get_time();
+	while (get_time() - start < duration)
+		usleep(100);
+}
 
 size_t	get_time(void)
 {
-    struct timeval	tv;
+	struct timeval	tv;
 
-    gettimeofday(&tv, NULL);
-    return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
+	gettimeofday(&tv, NULL);
+	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
 long	ft_atol(const char *str)
 {
-    long		result;
-    int		sign;
+	long	result;
+	int		sign;
+	int		i;
 
-    sign = 1;
-    result = 0;
-    while ((*str == 32) || (*str >= 9 && *str <= 13))
-        str++;
-    if (*str == '+' || *str == '-')
-    {
-        if (*str == '-')
-            sign *= -1;
-        str++;
-    }
-    while (*str >= '0' && *str <= '9')
-    {
-        result = (result * 10) + (*str++ - '0');
-        if (result < 0)
-            return (sign == 1 ? LONG_MAX : LONG_MIN);
-    }
-    return (result * sign);
+	result = 0;
+	sign = 1;
+	i = 0;
+	while ((str[i] >= 9 && str[i] <= 13) || str[i] == 32)
+		i++;
+	if (str[i] == '-' || str[i] == '+')
+	{
+		if (str[i] == '-')
+			sign = -1;
+		i++;
+	}
+	while (str[i] >= '0' && str[i] <= '9')
+	{
+		result = (result * 10) + (str[i] - '0');
+		i++;
+	}
+	return (result * sign);
+}
+
+void	wait_until_death(t_philo *philo)
+{
+	while (1)
+	{
+		pthread_mutex_lock(&philo->program->dead_lock);
+		if (philo->program->dead_flag)
+		{
+			pthread_mutex_unlock(&philo->program->dead_lock);
+			break ;
+		}
+		pthread_mutex_unlock(&philo->program->dead_lock);
+		usleep(100);
+	}
 }
