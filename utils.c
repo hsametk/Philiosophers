@@ -15,10 +15,16 @@
 void	precise_sleep(size_t duration)
 {
 	size_t	start;
+	size_t	current;
 
 	start = get_time();
-	while (get_time() - start < duration)
+	while (1)
+	{
+		current = get_time();
+		if ((current - start) >= duration)
+			break ;
 		usleep(100);
+	}
 }
 
 size_t	get_time(void)

@@ -26,6 +26,14 @@ void	thinking(t_philo *philo)
 
 void	take_forks(t_philo *philo)
 {
+	pthread_mutex_lock(&philo->program->dead_lock);
+	if (philo->program->dead_flag)
+	{
+		pthread_mutex_unlock(&philo->program->dead_lock);
+		return;
+	}
+	pthread_mutex_unlock(&philo->program->dead_lock);
+
 	if (philo->id % 2 == 0)
 	{
 		pthread_mutex_lock(philo->r_fork);
@@ -35,6 +43,7 @@ void	take_forks(t_philo *philo)
 	}
 	else
 	{
+		usleep(500);  // Tek numaralı filozoflar için daha uzun bekleme
 		pthread_mutex_lock(philo->l_fork);
 		print_status(philo, "has taken a fork");
 		pthread_mutex_lock(philo->r_fork);
