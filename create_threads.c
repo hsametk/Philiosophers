@@ -18,24 +18,24 @@ void	*monitor_routine(void *arg)
 	int			i;
 
 	program = (t_program *)arg;
+	usleep(100);
 	while (1)
 	{
 		i = 0;
 		while (i < program->num_of_philos)
 		{
 			pthread_mutex_lock(&program->dead_lock);
-			if (program->dead_flag)
+			if (check_philosopher_status(program, i))
 			{
 				pthread_mutex_unlock(&program->dead_lock);
 				return (NULL);
 			}
-			if (check_philosopher_status(program, i))
-				return (NULL);
 			pthread_mutex_unlock(&program->dead_lock);
+			usleep(100);
 			i++;
 		}
-		usleep(100);
 	}
+	return (NULL);
 }
 
 void	create_threads(t_program *program)

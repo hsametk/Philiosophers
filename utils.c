@@ -23,7 +23,7 @@ void	precise_sleep(size_t duration)
 		current = get_time();
 		if ((current - start) >= duration)
 			break ;
-		usleep(100);
+		usleep(50);
 	}
 }
 

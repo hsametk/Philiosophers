@@ -71,11 +71,8 @@ void	sleeping(t_philo *philo)
 		return ;
 	}
 	pthread_mutex_unlock(&philo->program->dead_lock);
-	pthread_mutex_lock(&philo->program->write_lock);
-	printf("%zu %d is sleeping\n",
-		get_time() - philo->program->start_time, philo->id);
-	pthread_mutex_unlock(&philo->program->write_lock);
-	usleep(philo->program->time_to_sleep * 1000);
+	print_status(philo, "is sleeping");
+	precise_sleep(philo->program->time_to_sleep);
 }
 
 void	*philo_routine(void *arg)
