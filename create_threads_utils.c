@@ -23,16 +23,19 @@ void	handle_death(t_program *program, int i)
 
 int	check_philosopher_status(t_program *program, int i)
 {
-	if (get_time() - program->philos[i].last_meal > program->time_to_die)
-	{
-		handle_death(program, i);
-		pthread_mutex_unlock(&program->dead_lock);
-		return (1);
-	}
-	if (check_all_ate(program))
+	size_t current_time;
+
+	current_time = get_time();
+	if (current_time - program->philos[i].last_meal > program->time_to_die)
 	{
 		program->dead_flag = 1;
-		pthread_mutex_unlock(&program->dead_lock);
+		printf("%zu %d died\n", current_time - program->start_time,
+			program->philos[i].id);
+		return (1);
+	}
+	if (program->num_times_to_eat != -1 && check_all_ate(program))
+	{
+		program->dead_flag = 1;
 		return (1);
 	}
 	return (0);

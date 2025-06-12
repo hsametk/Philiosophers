@@ -43,10 +43,8 @@ void	take_forks(t_philo *philo)
 	}
 	else
 	{
-		usleep(500);  // Tek numaralı filozoflar için daha uzun bekleme
+		usleep(500);
 		pthread_mutex_lock(philo->l_fork);
-		print_status(philo, "has taken a fork");
-		pthread_mutex_lock(philo->r_fork);
 		print_status(philo, "has taken a fork");
 	}
 }

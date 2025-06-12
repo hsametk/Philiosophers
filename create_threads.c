@@ -16,24 +16,28 @@ void	*monitor_routine(void *arg)
 {
 	t_program	*program;
 	int			i;
+	int			done;
 
 	program = (t_program *)arg;
 	usleep(100);
 	while (1)
 	{
 		i = 0;
+		done = 0;
+		pthread_mutex_lock(&program->dead_lock);
 		while (i < program->num_of_philos)
 		{
-			pthread_mutex_lock(&program->dead_lock);
 			if (check_philosopher_status(program, i))
 			{
-				pthread_mutex_unlock(&program->dead_lock);
-				return (NULL);
+				done = 1;
+				break;
 			}
-			pthread_mutex_unlock(&program->dead_lock);
-			usleep(100);
 			i++;
 		}
+		pthread_mutex_unlock(&program->dead_lock);
+		if (done)
+			break ;
+		usleep(100);
 	}
 	return (NULL);
 }

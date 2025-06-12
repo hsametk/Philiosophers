@@ -1,6 +1,6 @@
 NAME = philo
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -pthread -g #-fsanitize=thread -g
+CFLAGS = -Wall -Wextra -Werror -pthread -g #-fsanitize=thread
 SRCS = philo.c \
        input_validation_utils.c \
        create_threads.c \
